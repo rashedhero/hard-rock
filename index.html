@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lyricss</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="stylesheet" href="index.css">
+</head>
+
+
+<body>
+<div main_div>
+   
+
+    <div class="search-bar col-md-6 mx-auto">
+    <h1 class="text-center">Lyrics Search</h1>
+    <div class="search-box my-5">
+        <input id="search_input" type="text" class="form-control" placeholder="Enter your artist song name">
+        <button id="btn" class="btn btn-success search-btn">Search</button>
+    </div>
+
+
+   <!-- simple resul -->
+   <div id="Click_result">
+    <!-- <br class="d-flex justify-content-centre">
+     <p class="author lead"><strong>Purple Noon</strong>Album by<span>Washed Out</span><button class="btn btn-success " >Get Lyrics</button></p>
+     <p class="author lead"><strong>Purple Noon</strong>Album by<span>Washed Out</span><button class="btn btn-success " >Get Lyrics</button></p>
+     <p class="author lead"><strong>Purple Noon</strong>Album by<span>Washed Out</span><button class="btn btn-success " >Get Lyrics</button></p>
+     <p class="author lead"><strong>Purple Noon</strong>Album by<span>Washed Out</span><button class="btn btn-success " >Get Lyrics</button></p>
+     <p class="author lead"><strong>Purple Noon</strong>Album by<span>Washed Out</span><button class="btn btn-success " >Get Lyrics</button></p> -->
+    </div>
+
+    </div>
+  
+     <div id="Click_result"> 
+
+    </div>
+
+    <div id="lyrics_show">
+      
+    </div>    
+    
+  </div>
+</body>
+
+
+<script>
+document.getElementById("btn").addEventListener('click',()=>{
+
+    document.getElementById('Click_result').innerHTML='';
+   const inputValue=document.getElementById('search_input').value;
+   
+    fetch(`https://api.lyrics.ovh/suggest/${inputValue}`)
+  .then(response => response.json())
+  .then(data =>{ 
+    //  data=data.slice(0,5);
+     newData=data;
+
+      for (let i = 0; i < data.data.length; i++) {
+         
+      
+
+
+         const title=(data.data[i].title)
+         const Artist=(data.data[i].artist.name)
+         document.getElementById("Click_result").innerHTML += `<p>${title}</p>
+         
+         ${Artist}
+       
+         <p>
+          <div d="Click_result">
+         <button class="btn btn-success " onClick="showLyrics(${i})"> Get Lyrices</button> </div> </p>
+           `
+         
+          if (i===9){
+              break;
+          }
+         
+         }});
+
+  
+
+})
+
+
+function showLyrics(index){
+    const title=newData.data[index].title
+   
+    const Artist=newData.data[index].artist.name
+  fetch(`https://api.lyrics.ovh/v1/${Artist}/${title}`)
+  .then(response => response.json())
+  .then(data=>{
+   
+    const lyrics=data.lyrics;
+    if (lyrics===undefined){
+      alert=("not found ")
+    }
+    
+    document.getElementById('lyrics_show').innerHTML = ` <pre>${lyrics} </pre>`
+   
+ 
+   
+   
+         
+  })}
+
+
+</script>
+
+
+
+
+
+</html>
